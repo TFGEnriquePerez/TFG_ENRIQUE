@@ -1,0 +1,1438 @@
+[
+    {
+        "id": "8b6f9920.0119b8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "887dbbfd.20c078",
+        "type": "mqtt in",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/conexion",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "bf196aab.747688",
+        "x": 460,
+        "y": 180,
+        "wires": [
+            [
+                "acbb7165.97b68"
+            ]
+        ]
+    },
+    {
+        "id": "acbb7165.97b68",
+        "type": "ui_text",
+        "z": "8b6f9920.0119b8",
+        "group": "9edeb8fe.23ae08",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "text",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 780,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "fa42a741.a31828",
+        "type": "mqtt in",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/Inicio",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "bf196aab.747688",
+        "x": 1220,
+        "y": 1100,
+        "wires": [
+            [
+                "94302050.1ce8"
+            ]
+        ]
+    },
+    {
+        "id": "67a84f09.8bfb4",
+        "type": "telegram sender",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "bot": "f8004305.05001",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1930,
+        "y": 1100,
+        "wires": [
+            [
+                "3311e87.8017618"
+            ]
+        ]
+    },
+    {
+        "id": "d440ba93.7ff7a8",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\nIni=msg.payload.Inicio;\n\nif(Ini==1){\nmsg.payload = {}\nmsg.payload.chatId = 1068642560\nmsg.payload.type = 'message'\nmsg.payload.content = 'Cerradura Inteligente Encendida'\nreturn msg;}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1690,
+        "y": 1100,
+        "wires": [
+            [
+                "67a84f09.8bfb4"
+            ]
+        ]
+    },
+    {
+        "id": "94302050.1ce8",
+        "type": "json",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1490,
+        "y": 1100,
+        "wires": [
+            [
+                "d440ba93.7ff7a8"
+            ]
+        ]
+    },
+    {
+        "id": "3311e87.8017618",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "Crear opciones",
+        "func": "context.global.keyboard = { pending : true, messageId : msg.payload.messageId };\n\nvar opts = {\n  reply_to_message_id: msg.payload.messageId,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"SI\",\n                    \"callback_data\": \"true\"\n                },\n                {\n                    \"text\": \"NO\",\n                    \"callback_data\": \"false\"\n                }],\n                \n            ]\n  })\n};\n\nmsg.payload.content = '¿Desea calibrar el sistema?';\nmsg.payload.options = opts;\n\nreturn [ msg ]",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2180,
+        "y": 1100,
+        "wires": [
+            [
+                "da6eac9b.0544f",
+                "84a76916.d3da28",
+                "64e7f269.9afb2c",
+                "2a6df03e.a5b38"
+            ]
+        ]
+    },
+    {
+        "id": "da6eac9b.0544f",
+        "type": "telegram sender",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "bot": "f8004305.05001",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 2430,
+        "y": 1100,
+        "wires": [
+            [
+                "dacecc7c.a4174"
+            ]
+        ]
+    },
+    {
+        "id": "3d3257c9.9de038",
+        "type": "telegram event",
+        "z": "8b6f9920.0119b8",
+        "name": "Opción elegida",
+        "bot": "f8004305.05001",
+        "event": "callback_query",
+        "autoanswer": false,
+        "x": 1220,
+        "y": 1580,
+        "wires": [
+            [
+                "59abeb51.8d2834",
+                "8b9ebf22.c8f57",
+                "88a0946.c97ed68",
+                "ba2cf2f5.9b5fe"
+            ]
+        ]
+    },
+    {
+        "id": "cceaae57.9f629",
+        "type": "mqtt out",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/Calibrado",
+        "qos": "",
+        "retain": "",
+        "broker": "bf196aab.747688",
+        "x": 1830,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "59abeb51.8d2834",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "var activo=global.get(\"Boton1\");\n\nvar calibrado=msg.payload.content\n\nif(activo==true){\nmsg.payload={}\nmsg.payload = \"{ \\\"Calibrar\\\":\"+calibrado+\" }\";\n\nreturn msg;}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1610,
+        "y": 1400,
+        "wires": [
+            [
+                "cfdcdb2e.82f0f8",
+                "8ca5410.de40ac",
+                "58527fa9.25b68",
+                "cceaae57.9f629"
+            ]
+        ]
+    },
+    {
+        "id": "2f3a1193.3a181e",
+        "type": "switch",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload.Calibrar",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 2150,
+        "y": 1360,
+        "wires": [
+            [
+                "3bfdbd08.a17682"
+            ],
+            [
+                "ebfa1d1c.891c5",
+                "825d7032.50929",
+                "25276e6d.bedee2",
+                "8cf81920.d863e8"
+            ]
+        ]
+    },
+    {
+        "id": "77cf8031.fd4e7",
+        "type": "debug",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1550,
+        "y": 2080,
+        "wires": []
+    },
+    {
+        "id": "cfdcdb2e.82f0f8",
+        "type": "json",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1970,
+        "y": 1360,
+        "wires": [
+            [
+                "2f3a1193.3a181e"
+            ]
+        ]
+    },
+    {
+        "id": "3bfdbd08.a17682",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\nmsg.payload = {}\nmsg.payload.chatId =  1068642560\n\nmsg.payload.type = 'editMessageText'\nmsg.payload.content = 'Asegurese de que la puerta esta completamente cerrada, una vez hecho esto, memorice el numero necesario de vueltas sin contar el gatillo'\n\nmsg.payload.options = {\n  message_id : global.get(\"msgID\"),\n  chat_id: 1068642560\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2430,
+        "y": 1400,
+        "wires": [
+            [
+                "a40cfaa0.b7c028"
+            ]
+        ]
+    },
+    {
+        "id": "a40cfaa0.b7c028",
+        "type": "telegram sender",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "bot": "f8004305.05001",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 2690,
+        "y": 1400,
+        "wires": [
+            [
+                "94565617.ba6668",
+                "5ea2262e.b5d538"
+            ]
+        ]
+    },
+    {
+        "id": "94565617.ba6668",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "Crear opciones",
+        "func": "msg.payload = {}\nmsg.payload.chatId =  1068642560\n\nmsg.payload.type = 'message'\n\nvar opts = {\n  \n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"Nueva Vuelta\",\n                    \"callback_data\": \"true\"\n                },\n                {\n                    \"text\": \"Fase 2\",\n                    \"callback_data\": \"false\"\n                }],\n                \n            ]\n  })\n};\n\nmsg.payload.content = 'Seleccione nueva vuelta, tantas veces como vueltas tenga tu cerradura, cuando termine seleccione Fase 2';\nmsg.payload.options = opts;\n\nreturn [ msg ]",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2920,
+        "y": 1400,
+        "wires": [
+            [
+                "9ea1695e.591a58"
+            ]
+        ]
+    },
+    {
+        "id": "9ea1695e.591a58",
+        "type": "telegram sender",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "bot": "f8004305.05001",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 3210,
+        "y": 1400,
+        "wires": [
+            [
+                "43157878.712118"
+            ]
+        ]
+    },
+    {
+        "id": "8b9ebf22.c8f57",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\nvar activo=global.get(\"Boton2\");\n\nvar vuelta=msg.payload.content\n\nif(activo==true){\nmsg.payload={}\nmsg.payload = \"{ \\\"Vuelta\\\":\"+vuelta+\" }\";\n\nreturn msg }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1570,
+        "y": 1580,
+        "wires": [
+            [
+                "c214fbd4.9d75a8",
+                "3da6f802.e93008"
+            ]
+        ]
+    },
+    {
+        "id": "84a76916.d3da28",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton1",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2370,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8ca5410.de40ac",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton1",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1810,
+        "y": 1180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "58527fa9.25b68",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton2",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1890,
+        "y": 1260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "64e7f269.9afb2c",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton2",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2330,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3da6f802.e93008",
+        "type": "mqtt out",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/Vuelta",
+        "qos": "",
+        "retain": "",
+        "broker": "bf196aab.747688",
+        "x": 1680,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "159dd29a.a44add",
+        "type": "switch",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload.Vuelta",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1930,
+        "y": 1560,
+        "wires": [
+            [
+                "8bbcc2b8.df434"
+            ],
+            [
+                "3bcfd32e.56714c",
+                "966cab89.9d19e8",
+                "7ec16325.a467cc"
+            ]
+        ]
+    },
+    {
+        "id": "c214fbd4.9d75a8",
+        "type": "json",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1770,
+        "y": 1560,
+        "wires": [
+            [
+                "159dd29a.a44add"
+            ]
+        ]
+    },
+    {
+        "id": "8bbcc2b8.df434",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "Crear opciones",
+        "func": "var numero=global.get(\"Nvueltas\")+1;\nvar opts = {\n  \n  message_id : global.get(\"msgID2\"),\n  chat_id: 1068642560,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"Nueva Vuelta\",\n                    \"callback_data\": \"true\"\n                },\n                {\n                    \"text\": \"Fase 2\",\n                    \"callback_data\": \"false\"\n                }],\n                \n            ]\n  })\n};\nmsg.payload.type = 'editMessageText'\nmsg.payload.chatId = 1068642560\nmsg.payload.content = 'Numero de vueltas:'+numero+ ' Seleccione una vuelta nueva o ir a la segunda fase';\nmsg.payload.options = opts;\n\nmsg.payload.numero=numero;\nreturn [ msg ]",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2200,
+        "y": 1560,
+        "wires": [
+            [
+                "9ea1695e.591a58",
+                "b81cb2da.4c5cf",
+                "151a17e8.34c6a8"
+            ]
+        ]
+    },
+    {
+        "id": "5ea2262e.b5d538",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Nvueltas",
+                "pt": "global",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2850,
+        "y": 1320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b81cb2da.4c5cf",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton2",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2730,
+        "y": 1660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "151a17e8.34c6a8",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Nvueltas",
+                "pt": "global",
+                "to": "payload.numero",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2770,
+        "y": 1560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3bcfd32e.56714c",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "Crear opciones",
+        "func": "var numero=global.get(\"Nvueltas\")+1;\nvar opts = {\n     message_id : global.get(\"msgID2\"),\n  chat_id: 1068642560,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"Incrementar giro\",\n                    \"callback_data\": \"true\"\n                },\n                {\n                    \"text\": \"Finalizar Calibración\",\n                    \"callback_data\": \"false\"\n                }],\n                \n            ]\n  })\n};\nmsg.payload.type = 'editMessageText'\nmsg.payload.chatId = 1068642560\nmsg.payload.content = \"Incremente el giro del servomotor, hasta que la puerta se abra unicamente tirando de ella, una vez hecho esto, pulse el boton de finalizar calibración\";\nmsg.payload.options = opts;\nmsg.payload.numero=numero;\nreturn [ msg ]",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2320,
+        "y": 1780,
+        "wires": [
+            [
+                "693a9290.7547ac"
+            ]
+        ]
+    },
+    {
+        "id": "693a9290.7547ac",
+        "type": "telegram sender",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "bot": "f8004305.05001",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 2790,
+        "y": 1820,
+        "wires": [
+            [
+                "3042613.f71649e"
+            ]
+        ]
+    },
+    {
+        "id": "966cab89.9d19e8",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton2",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2130,
+        "y": 1620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "88a0946.c97ed68",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\nvar activo=global.get(\"Boton3\");\n\nvar gatillo=msg.payload.content\n\nif(activo==true){\nmsg.payload={}\nmsg.payload = \"{ \\\"Gatillo\\\":\"+gatillo+\" }\";\n\nreturn msg }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1590,
+        "y": 1860,
+        "wires": [
+            [
+                "577dca0a.d4f444",
+                "c2321b6d.1fc498"
+            ]
+        ]
+    },
+    {
+        "id": "2a6df03e.a5b38",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton3",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2393,
+        "y": 917,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7ec16325.a467cc",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton3",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2110,
+        "y": 1680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "577dca0a.d4f444",
+        "type": "mqtt out",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/Gatillo",
+        "qos": "",
+        "retain": "",
+        "broker": "bf196aab.747688",
+        "x": 1800,
+        "y": 2000,
+        "wires": []
+    },
+    {
+        "id": "233f1015.e41cd",
+        "type": "switch",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload.Gatillo",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 2010,
+        "y": 1840,
+        "wires": [
+            [
+                "3bcfd32e.56714c"
+            ],
+            [
+                "825d7032.50929",
+                "9d6fdd35.b5fd",
+                "400e37ca.5b28c8"
+            ]
+        ]
+    },
+    {
+        "id": "c2321b6d.1fc498",
+        "type": "json",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1850,
+        "y": 1840,
+        "wires": [
+            [
+                "233f1015.e41cd"
+            ]
+        ]
+    },
+    {
+        "id": "1f2f5dfd.251d02",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton3",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2350,
+        "y": 2080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "825d7032.50929",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "var numero=global.get(\"Nvueltas\")\nmsg.payload = {}\nmsg.payload.chatId = 1068642560\nmsg.payload.type = 'editMessageText'\nmsg.payload.content = \"Sistema calibrado, numero de vuetltas: \"+numero\nmsg.payload.options = {\n  message_id : global.get(\"msgID\"),\n  chat_id: 1068642560\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2310,
+        "y": 1860,
+        "wires": [
+            [
+                "693a9290.7547ac"
+            ]
+        ]
+    },
+    {
+        "id": "9d6fdd35.b5fd",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "var activo=global.get(\"Boton3\");\n\nvar calibrado=\"false\"\n\nif(activo==true){\nmsg.payload={}\nmsg.payload = \"{ \\\"Calibrar\\\":\"+calibrado+\" }\";\n\nreturn msg;}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2190,
+        "y": 1960,
+        "wires": [
+            [
+                "1f2f5dfd.251d02",
+                "cceaae57.9f629"
+            ]
+        ]
+    },
+    {
+        "id": "f8af79cf.430768",
+        "type": "mqtt out",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/Programa",
+        "qos": "",
+        "retain": "",
+        "broker": "bf196aab.747688",
+        "x": 2470,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "ebfa1d1c.891c5",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "var activo=global.get(\"Boton2\");\n\nvar programa=\"true\"\n\nif(activo==true){\nmsg.payload={}\nmsg.payload = \"{ \\\"Programa\\\":\"+programa+\" }\";\n\nreturn msg;}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2150,
+        "y": 1460,
+        "wires": [
+            [
+                "f8af79cf.430768"
+            ]
+        ]
+    },
+    {
+        "id": "25276e6d.bedee2",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Boton2",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2370,
+        "y": 1280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c22df41a.1f9218",
+        "type": "mqtt out",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/Abrir",
+        "qos": "",
+        "retain": "",
+        "broker": "bf196aab.747688",
+        "x": 2000,
+        "y": 2200,
+        "wires": []
+    },
+    {
+        "id": "c90a445c.3850e8",
+        "type": "delay",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 1580,
+        "y": 2300,
+        "wires": [
+            [
+                "850fbf54.db31e"
+            ]
+        ]
+    },
+    {
+        "id": "850fbf54.db31e",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\n\nvar abrir=\"false\"\n\n\nmsg.payload={}\nmsg.payload = \"{ \\\"Abrir\\\":\"+abrir+\" }\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1770,
+        "y": 2300,
+        "wires": [
+            [
+                "c22df41a.1f9218"
+            ]
+        ]
+    },
+    {
+        "id": "dacecc7c.a4174",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "msgID",
+                "pt": "global",
+                "to": "payload.content.message_id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2670,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "43157878.712118",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "msgID2",
+                "pt": "global",
+                "to": "payload.content.message_id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 3450,
+        "y": 1400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "87215aaf.07bb78",
+        "type": "telegram command",
+        "z": "8b6f9920.0119b8",
+        "name": "/Cerrar",
+        "command": "/Cerrar",
+        "bot": "f8004305.05001",
+        "strict": false,
+        "hasresponse": true,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 2,
+        "x": 250,
+        "y": 2560,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "3042613.f71649e",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "msgID2",
+                "pt": "global",
+                "to": "payload.content.message_id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 3090,
+        "y": 1820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "400e37ca.5b28c8",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "Crear opciones",
+        "func": "\nvar opts = {\n  \n  message_id : global.get(\"msgID2\"),\n  chat_id: 1068642560,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"Abrir Cerradura\",\n                    \"callback_data\": \"1\"\n                },\n                {\n                    \"text\": \"Cerrar Cerradura\",\n                    \"callback_data\": \"2\"\n                }],\n                \n            ]\n  })\n};\nmsg.payload.type = 'editMessageText'\nmsg.payload.chatId = 1068642560\nmsg.payload.content = 'Menú de opciones: ';\nmsg.payload.options = opts;\n\n\nreturn [ msg ]",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2520,
+        "y": 1920,
+        "wires": [
+            [
+                "693a9290.7547ac"
+            ]
+        ]
+    },
+    {
+        "id": "8cf81920.d863e8",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "Crear opciones",
+        "func": "\nvar opts = {\n  \n  message_id : global.get(\"msgID2\"),\n  chat_id: 1068642560,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"Abrir Cerradura\",\n                    \"callback_data\": \"1\"\n                },\n                {\n                    \"text\": \"Cerrar Cerradura\",\n                    \"callback_data\": \"2\"\n                }],\n                \n            ]\n  })\n};\nmsg.payload.type = 'editMessageText'\nmsg.payload.chatId = 1068642560\nmsg.payload.content = 'Menú de opciones: ';\nmsg.payload.options = opts;\n\n\nreturn [ msg ]",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2480,
+        "y": 1720,
+        "wires": [
+            [
+                "693a9290.7547ac"
+            ]
+        ]
+    },
+    {
+        "id": "fae0c9e3.941738",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\n\nvar abrir=\"true\"\n\n\nmsg.payload={}\nmsg.payload = \"{ \\\"Abrir\\\":\"+abrir+\" }\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1650,
+        "y": 2220,
+        "wires": [
+            [
+                "c22df41a.1f9218"
+            ]
+        ]
+    },
+    {
+        "id": "ba2cf2f5.9b5fe",
+        "type": "switch",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload.content",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1290,
+        "y": 2140,
+        "wires": [
+            [
+                "fae0c9e3.941738",
+                "c90a445c.3850e8",
+                "77cf8031.fd4e7",
+                "ac9763fc.e4317"
+            ],
+            [
+                "3e58252d.fd122a",
+                "84c96875.29be38",
+                "6c676479.475cfc",
+                "77cf8031.fd4e7"
+            ]
+        ]
+    },
+    {
+        "id": "2c0cac36.b9aa04",
+        "type": "mqtt out",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/Cerrar",
+        "qos": "",
+        "retain": "",
+        "broker": "bf196aab.747688",
+        "x": 1900,
+        "y": 2440,
+        "wires": []
+    },
+    {
+        "id": "84c96875.29be38",
+        "type": "delay",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 1560,
+        "y": 2540,
+        "wires": [
+            [
+                "499725e6.c2d4cc"
+            ]
+        ]
+    },
+    {
+        "id": "3e58252d.fd122a",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\n\nvar cerrar=\"true\"\n\n\nmsg.payload={}\nmsg.payload = \"{ \\\"Cerrar\\\":\"+cerrar+\" }\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1630,
+        "y": 2440,
+        "wires": [
+            [
+                "2c0cac36.b9aa04"
+            ]
+        ]
+    },
+    {
+        "id": "499725e6.c2d4cc",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\n\nvar cerrar=\"false\"\n\n\nmsg.payload={}\nmsg.payload = \"{ \\\"Cerrar\\\":\"+cerrar+\" }\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1810,
+        "y": 2540,
+        "wires": [
+            [
+                "2c0cac36.b9aa04"
+            ]
+        ]
+    },
+    {
+        "id": "8db13cb8.26ebf",
+        "type": "mqtt in",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "topic": "TFG/Cerradura/Estado",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "bf196aab.747688",
+        "x": 960,
+        "y": 2620,
+        "wires": [
+            [
+                "ebca1843.e8aca8",
+                "77cf8031.fd4e7"
+            ]
+        ]
+    },
+    {
+        "id": "ebca1843.e8aca8",
+        "type": "json",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1170,
+        "y": 2620,
+        "wires": [
+            [
+                "e87e3815.afe558",
+                "79592365.a9661c"
+            ]
+        ]
+    },
+    {
+        "id": "ac9763fc.e4317",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "\n\nmsg.payload = {}\nmsg.payload.chatId = 1068642560\nmsg.payload.type = 'editMessageText'\n\nmsg.payload.content = \"Abriendo puerta...\"\nmsg.payload.options = {\n  message_id : global.get(\"msgID2\"),\n  chat_id: 1068642560\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1730,
+        "y": 2140,
+        "wires": [
+            [
+                "614f2d94.2aaed4"
+            ]
+        ]
+    },
+    {
+        "id": "614f2d94.2aaed4",
+        "type": "telegram sender",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "bot": "f8004305.05001",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 2470,
+        "y": 2140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6c676479.475cfc",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "componer mensaje",
+        "func": "Estado=global.get(\"Estado\");\n\nmsg.payload = {}\nmsg.payload.chatId = 1068642560\nmsg.payload.type = 'editMessageText'\nif(Estado==0){\nmsg.payload.content = \"Cerrando puerta...\"}\nif(Estado==1){\nmsg.payload.content = \"Puerta Cerrada\"}\nmsg.payload.options = {\n  message_id : global.get(\"msgID2\"),\n  chat_id: 1068642560\n}\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1730,
+        "y": 2360,
+        "wires": [
+            [
+                "614f2d94.2aaed4",
+                "4c4af743.3790c8"
+            ]
+        ]
+    },
+    {
+        "id": "e87e3815.afe558",
+        "type": "function",
+        "z": "8b6f9920.0119b8",
+        "name": "Crear opciones",
+        "func": "\nvar opts = {\n  \n  message_id : global.get(\"msgID2\"),\n  chat_id: 1068642560,\n  reply_markup: JSON.stringify({\n    \"inline_keyboard\": [[\n                {\n                    \"text\": \"Abrir Cerradura\",\n                    \"callback_data\": \"1\"\n                },\n                {\n                    \"text\": \"Cerrar Cerradura\",\n                    \"callback_data\": \"2\"\n                }],\n                \n            ]\n  })\n};\nmsg.payload.type = 'editMessageText'\nmsg.payload.chatId = 1068642560\nmsg.payload.content = 'Menú de opciones: ';\nmsg.payload.options = opts;\n\n\nreturn [ msg ]",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 2640,
+        "y": 2640,
+        "wires": [
+            [
+                "693a9290.7547ac"
+            ]
+        ]
+    },
+    {
+        "id": "79592365.a9661c",
+        "type": "change",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Estado",
+                "pt": "global",
+                "to": "payload.Estado",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1390,
+        "y": 2740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4c4af743.3790c8",
+        "type": "delay",
+        "z": "8b6f9920.0119b8",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 2340,
+        "y": 2520,
+        "wires": [
+            [
+                "e87e3815.afe558"
+            ]
+        ]
+    },
+    {
+        "id": "bf196aab.747688",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "192.168.1.200",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "9edeb8fe.23ae08",
+        "type": "ui_group",
+        "name": "Group 1",
+        "tab": "e714ef11.5ed4",
+        "order": 1,
+        "disp": true,
+        "width": 6
+    },
+    {
+        "id": "f8004305.05001",
+        "type": "telegram bot",
+        "botname": "TFG_cerradura_bot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "e714ef11.5ed4",
+        "type": "ui_tab",
+        "name": "Tab 1",
+        "icon": "dashboard",
+        "order": 1
+    }
+]
